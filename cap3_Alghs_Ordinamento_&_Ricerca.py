@@ -82,7 +82,6 @@ def selection_sort(elements):  #[5, 2, 6, 1, 3]
     return elements
 
 
-
 list1 = [5, 2, 6, 1, 3]
 list2 = [9, 2,  6, 1, 5,  4,3,8]
 print(bubble_sort(list1))
@@ -91,4 +90,44 @@ print(merge_sort(list2))
 print(shell_sort(list1))
 print(selection_sort(list1))
 
+def linear_search(elements,item):
+    index = 0
+    isFound = False
+    while index <len(elements) and isFound is False:  #itera per ciascuno item della lista e lo compara con l'item da trovare dato
+        if elements[index] == item:
+            isFound = True
+        else:
+            index = index +1
+    return isFound
 
+def binary_search(elements,item):
+    first = 0
+    last = len(elements)-1
+    isFound = False
+    while first <=last and not isFound:
+        midpoint = (first+last) //2  #
+        if elements[midpoint] == item:
+            return True
+        else:
+            if item <elements[midpoint]:
+                last = midpoint -1
+            else:
+                first = midpoint +1
+    return False
+
+def interpolation_search(elements,item):
+    idx0 = 0
+    idxn = (len(elements)-1)
+    isFound = False
+    while idx0 <= idxn and item >= elements[idx0] and item <= elements[idxn]:
+        mid = idx0 + int(   (   ( float(idxn-idx0) / (elements[idxn] - elements[idx0]) )   *   (item - elements[idx0])  )  )
+        if elements[mid] == item:
+            return True
+        if elements[mid] < item:
+            idx0 = mid +1
+    return False
+    #ERRORE DI INFINITELOOP TROVATO DA CHATGPT
+
+print(linear_search(list1,2))
+print(binary_search(list1,5))
+print(binary_search(list2,6))
