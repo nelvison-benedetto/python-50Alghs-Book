@@ -55,8 +55,7 @@ def merge_sort(elements):  #MERGE SORT, divide et impera!
     return elements  #fist cycle here elements=2items, ora questi 2items sono ordinati
     #ora si confronterà con i risultati dell'altro ramo (che anche lui aveva elements=2 oppure elements=1 )
 
-#[5, 2, 6, 1, 3]
-def shell_sort(elements):
+def shell_sort(elements):   #[5, 2, 6, 1, 3]
     distance = len(elements) //2  #first cycle 5//2 =2
     while distance >0:  #first cycle finche è 2>0
         for i in range(distance, len(elements)):  #2->5(dunque 2-3-4)
@@ -72,6 +71,17 @@ def shell_sort(elements):
         #NEW CYCLE where distance will be =1,   inner FC  i=1 temp=elements[1] j=1
     return elements
 
+def selection_sort(elements):  #[5, 2, 6, 1, 3]
+    for fill_slot in range(len(elements)-1, 0, -1):  #fc 4->0 (quindi 4-3-2-1)
+        max_index =0  #fc fill_slot=4
+        for location in range(1, fill_slot+1):  #fc 1->5 (quindi 1-2-3-4) | sc(secondcycle) solo 1->4(quindi 1-2-3) dunque non controlla l'ultimo item(che è quello piu Big trovato ne Cycle precedente)
+            if elements[location] > elements[max_index]:
+                max_index = location
+        elements[fill_slot], elements[max_index] = elements[max_index], elements[fill_slot]
+           #scambia di posto, quindi in posizione [fill_slot] finirà l'item piu big selezionato da max_index. per il prossimo cycle fill_slot sarà uno in meno quindi questo item non verrà piu toccato
+    return elements
+
+
 
 list1 = [5, 2, 6, 1, 3]
 list2 = [9, 2,  6, 1, 5,  4,3,8]
@@ -79,3 +89,6 @@ print(bubble_sort(list1))
 print(insertion_sort(list1))
 print(merge_sort(list2))
 print(shell_sort(list1))
+print(selection_sort(list1))
+
+
