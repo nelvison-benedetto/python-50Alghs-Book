@@ -23,9 +23,43 @@ def insertion_sort(elements):  #INSERTION SORT
         elements[j + 1] = key   #first cycle here j=0, modifico questo elemento = key
     return elements   #first cycle result [2, 5, 6, 1, 3]
 
+def merge_sort(elements):  #MERGE SORT, divide et impera!
+    if len(elements) <= 1:
+        return elements
+    mid = len(elements) // 2  #// is divisione intera e.g. 5//2 =2, quindi se ci sono 5 elems, 2 andranno in left e 3 in right
+    left = elements[:mid]   #create new list
+    right = elements[mid:]  #create new list
+
+    merge_sort(left)  #non continuare il codice, finche non ti viene restituito qualcosa dall'interno. stessa cosa per tutti i figli interni.
+    merge_sort(right)
+    #-- first cycle here arrive WHEN elements = 2items, merge_sort(left)->ha eseguito merge_sort(with 1 item) e gli è stato restituito, same for merge_sort(right)
+
+    a,b,c = 0,0,0  #a x scandire left, b x scandire right, c x index in list Elements
+    while a<len(left) and b<len(right):  #gira solo fino a quando o A o B hanno scandito tutti i loro items nella loro lista
+        if left[a] < right[b]:
+            elements[c] = left[a]  #first cycle modifica item in index 0 in lista originale
+            a += 1  #first cycle avanza di 1index per lista left
+        else:
+            elements[c] = right[b]
+            b += 1
+        c += 1  #first cycle avanza di 1 index su lista originale
+
+    while a<len(left):  #se ci sono altri elementi nella meta sx
+        elements[c] = left[a]
+        a += 1
+        c += 1
+    while b<len(right):  #se ci sono altri elementi nella meta dx
+        elements[c] = right[b]
+        b += 1
+        c += 1
+    return elements  #fist cycle here elements=2items, ora questi 2items sono ordinati
+    #ora si confronterà con i risultati dell'altro ramo (che anche lui aveva elements=2 oppure elements=1 )
 
 
-list1 = [5, 2,  6, 1, 3]
+
+
+list1 = [5, 2, 6, 1, 3]
+list2 = [9, 2,  6, 1, 5,  4,3,8]
 print(bubble_sort(list1))
 print(insertion_sort(list1))
-
+print(merge_sort(list2))
