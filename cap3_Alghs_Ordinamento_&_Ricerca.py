@@ -55,7 +55,22 @@ def merge_sort(elements):  #MERGE SORT, divide et impera!
     return elements  #fist cycle here elements=2items, ora questi 2items sono ordinati
     #ora si confronterà con i risultati dell'altro ramo (che anche lui aveva elements=2 oppure elements=1 )
 
-
+#[5, 2, 6, 1, 3]
+def shell_sort(elements):
+    distance = len(elements) //2  #first cycle 5//2 =2
+    while distance >0:  #first cycle finche è 2>0
+        for i in range(distance, len(elements)):  #2->5(dunque 2-3-4)
+            temp = elements[i]  #firstcycle temp=6
+            j=i  #fc  j=2
+            while j >=distance and elements[j-distance] >temp:  #fc 2>=2 && elements[0]>temp
+                elements[j] = elements[j-distance]  #secondcycle now list is [5, 2, 6, 2, 3]
+                j= j-distance  #secondcycle j=1
+            elements[j] = temp  #assegni, ma cmnq rimane uguale
+            #NEW CYCLE where i will be 3, temp=elements[3], j=3, distance always =2
+            #NEW CYCLE where i will be 4, temp=elements[4], j=4, distance always =2
+        distance = distance//2
+        #NEW CYCLE where distance will be =1,   inner FC  i=1 temp=elements[1] j=1
+    return elements
 
 
 list1 = [5, 2, 6, 1, 3]
@@ -63,3 +78,4 @@ list2 = [9, 2,  6, 1, 5,  4,3,8]
 print(bubble_sort(list1))
 print(insertion_sort(list1))
 print(merge_sort(list2))
+print(shell_sort(list1))
