@@ -84,11 +84,15 @@ def selection_sort(elements):  #[5, 2, 6, 1, 3]
 
 list1 = [5, 2, 6, 1, 3]
 list2 = [9, 2,  6, 1, 5,  4,3,8]
+list3 = [2,3,4,5,6]
+list4 = [2, 4, 6, 9, 12, 18, 24]
+
 print(bubble_sort(list1))
 print(insertion_sort(list1))
 print(merge_sort(list2))
 print(shell_sort(list1))
 print(selection_sort(list1))
+
 
 def linear_search(elements,item):
     index = 0
@@ -100,34 +104,47 @@ def linear_search(elements,item):
             index = index +1
     return isFound
 
-def binary_search(elements,item):
+def binary_search(elements,item):  #[2,3,4,5,6]  [3]  per funzionare gli elements devono già essere ordinati
     first = 0
-    last = len(elements)-1
+    last = len(elements)-1  #fc  =4
     isFound = False
     while first <=last and not isFound:
-        midpoint = (first+last) //2  #
+        midpoint = (first+last) //2
         if elements[midpoint] == item:
             return True
-        else:
+        else:  #consideri o la parte sx o la parte dx di Midpoint, l'altra parte la  butti e non verrà mai piu utilizzata
             if item <elements[midpoint]:
                 last = midpoint -1
             else:
                 first = midpoint +1
     return False
 
-def interpolation_search(elements,item):
+def interpolation_search(elements,item):  #[2, 4, 6, 9, 12, 18, 24]  [18]  per funzionare gli elements devono già essere ordinati
     idx0 = 0
-    idxn = (len(elements)-1)
+    idxn = (len(elements)-1)  #fc  =6
     isFound = False
     while idx0 <= idxn and item >= elements[idx0] and item <= elements[idxn]:
+
+        if elements[idxn] == elements[idx0]:  #evita divisione per zero
+            if elements[idx0] == item:
+                return True
+            else:
+                return False
+
         mid = idx0 + int(   (   ( float(idxn-idx0) / (elements[idxn] - elements[idx0]) )   *   (item - elements[idx0])  )  )
+          #formula interpolazione lineare, fc mid=4 | sc(secondcycle) mid=5
         if elements[mid] == item:
             return True
-        if elements[mid] < item:
-            idx0 = mid +1
+        if elements[mid] < item:  #fc execute this
+            idx0 = mid +1  #x next cycle seziono(prendo in consideraione) solo la parte a dx di mid
+        else:
+            idxn = mid - 1
     return False
-    #ERRORE DI INFINITELOOP TROVATO DA CHATGPT
+
 
 print(linear_search(list1,2))
-print(binary_search(list1,5))
-print(binary_search(list2,6))
+print(binary_search(list3,3))
+print(interpolation_search(list4,18))
+
+
+
