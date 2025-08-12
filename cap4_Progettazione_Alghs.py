@@ -109,6 +109,7 @@ def nearest_neighbor(city_a, cities):
 tsp(greedy_algorithm, generate_cities(200))  #O(n²) ma non garantisce il percorso ottimale
 '''
 
+'''
 #Algoritmo Page Rank (by larry page and sergey brin from Google)
 
 import numpy as np
@@ -143,7 +144,34 @@ def create_page_rank(a_graph):
 G, p = create_page_rank(my_web)
 print("Matrice di transizione G:\n", G)
 print("Vettore iniziale p:\n", p)
-
+'''
 
 #Strategy Programmazione Lineare
+
+import pulp
+
+# Creazione modello
+model = pulp.LpProblem("Profit_maximising_problem", pulp.LpMaximize)
+
+# Variabili decisionali
+A = pulp.LpVariable('A', lowBound=0, cat='Integer')
+B = pulp.LpVariable('B', lowBound=0, cat='Integer')
+
+# Funzione obiettivo
+model += 5000*A + 2500*B, "Profit"
+
+# Vincoli
+model += 3*A + 2*B <= 20
+model += 4*A + 3*B <= 30
+model += 4*A + 3*B <= 44
+
+# Risoluzione
+model.solve()
+
+# Risultati
+print("Status:", pulp.LpStatus[model.status])
+print("A =", A.varValue)
+print("B =", B.varValue)
+print("Profitto massimo =", pulp.value(model.objective))
+
 
