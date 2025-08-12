@@ -21,6 +21,7 @@ print(wordCountsCollected.collect())
 
 '''
 
+
 #Strategy Brute Force x problema Commesso Viaggiatore
 
 import random
@@ -86,7 +87,34 @@ def name(algorithm):
     return algorithm.__name__.replace('_tsp', '')
 
 # Esecuzione
-tsp(brute_force, generate_cities(10))
+tsp(brute_force, generate_cities(10))  #max x 10-11 citta, xk complessita O(n!) (usa fattoriale)
 
 
 
+#Strategy Algh Greedy x problema Commesso Viaggiatore
+def greedy_algorithm(cities, start=None):
+    city_ = start or first(cities)
+    tour = [city_]
+    unvisited = set(cities - {city_})
+    while unvisited:
+        city_ = nearest_neighbor(city_, unvisited)
+        tour.append(city_)
+        unvisited.remove(city_)
+    return tour
+
+def first(collection):
+    return next(iter(collection))
+
+def nearest_neighbor(city_a, cities):
+    return min(cities, key=lambda city_: distance_points(city_, city_a))
+
+tsp(greedy_algorithm, generate_cities(200))  #O(n²) ma non garantisce il percorso ottimale
+
+
+#Algh Page Rank (by larry page and sergey brin from Google)
+
+import numpy as np
+import networkx as nx
+import matplotlib.pyplot as plt
+
+my_web =
