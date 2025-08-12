@@ -18,10 +18,9 @@ print(wordPairs.collect())
 
 wordCountsCollected = wordPairs.reduceByKey(lambda x,y: x+y)  #x aggregare e ottenere il result finale
 print(wordCountsCollected.collect())
-
 '''
 
-
+'''
 #Strategy Brute Force x problema Commesso Viaggiatore
 
 import random
@@ -86,7 +85,6 @@ def tsp(algorithm, cities):  #generate path in base all'algh e al numero di citt
 def name(algorithm):
     return algorithm.__name__.replace('_tsp', '')
 
-# Esecuzione
 tsp(brute_force, generate_cities(10))  #max x 10-11 citta, xk complessita O(n!) (usa fattoriale)
 
 
@@ -109,12 +107,43 @@ def nearest_neighbor(city_a, cities):
     return min(cities, key=lambda city_: distance_points(city_, city_a))
 
 tsp(greedy_algorithm, generate_cities(200))  #O(n²) ma non garantisce il percorso ottimale
+'''
 
-
-#Algh Page Rank (by larry page and sergey brin from Google)
+#Algoritmo Page Rank (by larry page and sergey brin from Google)
 
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-my_web =
+# Creazione grafo
+my_web = nx.DiGraph()
+my_pages = range(1, 6)  # includo anche il nodo 5
+connections = [(1, 3), (2, 1), (2, 3), (3, 1), (3, 2), (3, 4), (4, 5), (5, 1), (5, 4)]
+my_web.add_nodes_from(my_pages)
+my_web.add_edges_from(connections)
+
+# Disegno grafo
+pos = nx.shell_layout(my_web)
+nx.draw(my_web, pos, arrows=True, with_labels=True)
+plt.show()
+
+# Funzione per creare PageRank manualmente
+def create_page_rank(a_graph):
+    nodes_set = len(a_graph)
+    M = nx.to_numpy_array(a_graph, dtype=float)  # matrice adiacenza
+    outwards = np.squeeze(np.asarray(np.sum(M, axis=1)))  # gradi uscenti
+    prob_outwards = np.array([
+        1.0 / count if count > 0 else 0.0
+        for count in outwards
+    ])
+    G = np.asarray(np.multiply(M.T, prob_outwards))  # normalizzazione
+    p = np.ones(nodes_set) / float(nodes_set)  # distribuzione iniziale uniforme
+    return G, p
+
+G, p = create_page_rank(my_web)
+print("Matrice di transizione G:\n", G)
+print("Vettore iniziale p:\n", p)
+
+
+#Strategy Programmazione Lineare
+
