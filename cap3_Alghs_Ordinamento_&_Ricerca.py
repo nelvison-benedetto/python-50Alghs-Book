@@ -13,17 +13,30 @@ def bubble_sort(elements):  #BUBBLE SORT
             break
     return elements
 
+def selection_sort(elements):  #[5, 2, 6, 1, 3]
+    for fill_slot in range(len(elements)-1, 0, -1):  #fc 4->0 (quindi 4-3-2-1)  cammini all'indietro
+        max_index = 0   #fc fill_slot=4
+        for location in range(1, fill_slot+1):  #fc 1->5(4+1) (quindi 1-2-3-4) | sc(secondcycle) solo 1->4(quindi 1-2-3) dunque non controlla l'ultimo item(che è quello piu Big trovato ne Cycle precedente)
+            if elements[location] > elements[max_index]:
+                max_index = location   
+        #ora il puntatore max_index punta all'item piu grande
+        elements[fill_slot], elements[max_index] = elements[max_index], elements[fill_slot]
+           #scambia di posto, quindi in posizione [fill_slot] finirà l'item piu big selezionato da max_index. per il prossimo cycle fill_slot sarà uno in meno quindi questo item non verrà piu toccato
+    return elements
+
+
 def insertion_sort(elements):  #INSERTION SORT
-    for i in range(1, len(elements)):
+    for i in range(1, len(elements)):  #se l'arr è 5 elementi, allora fa 1-2-3-4 non include il 5!
         key = elements[i]       # elemento current chiave
         j = i - 1
         while j >= 0 and elements[j] > key:
-            elements[j + 1] = elements[j]     #first cicle here diventa [5, 5, 6, 1, 3]
+            elements[j + 1] = elements[j]     #first cicle here diventa da [5, 2, 6, 1, 3] a  [5, 5, 6, 1, 3]
             j -= 1  #first cycle here j diventa da 0 a -1
-        elements[j + 1] = key   #first cycle here j=0, modifico questo elemento = key
-    return elements   #first cycle result [2, 5, 6, 1, 3]
+        elements[j + 1] = key   #first cycle here j=0, modifico questo elemento = key, first cycle here diventa [2, 5, 6, 1, 3]
+        #qua cmnq la lista elements viene continuamente modificata ad ogni ciclo, e viene riusata nel prossimo ciclo
+    return elements   #classico return finale per dare la risposta ultimata
 
-def merge_sort(elements):  #MERGE SORT, divide et impera!
+def merge_sort(elements):  #MERGE SORT, divide et impera! 🔥
     if len(elements) <= 1:
         return elements
     mid = len(elements) // 2  #// is divisione intera e.g. 5//2 =2, quindi se ci sono 5 elems, 2 andranno in left e 3 in right
@@ -33,11 +46,12 @@ def merge_sort(elements):  #MERGE SORT, divide et impera!
     merge_sort(left)  #non continuare il codice, finche non ti viene restituito qualcosa dall'interno. stessa cosa per tutti i figli interni.
     merge_sort(right)
     #-- first cycle here arrive WHEN elements = 2items, merge_sort(left)->ha eseguito merge_sort(with 1 item) e gli è stato restituito, same for merge_sort(right)
+    #-- second cycle here arrive WHEN ritornano i 2 segmenti piu piccoli possibili (2elements ora ordinati)-(2elements ora ordinati) or (2elements ora ordinati)-(1elements)
 
     a,b,c = 0,0,0  #a x scandire left, b x scandire right, c x index in list Elements
     while a<len(left) and b<len(right):  #gira solo fino a quando o A o B hanno scandito tutti i loro items nella loro lista
         if left[a] < right[b]:
-            elements[c] = left[a]  #first cycle modifica item in index 0 in lista originale
+            elements[c] = left[a]  #first cycle modifica item in index 0 in lista originale (di questo segmento)
             a += 1  #first cycle avanza di 1index per lista left
         else:
             elements[c] = right[b]
@@ -58,7 +72,7 @@ def merge_sort(elements):  #MERGE SORT, divide et impera!
 def shell_sort(elements):   #[5, 2, 6, 1, 3]
     distance = len(elements) //2  #first cycle 5//2 =2
     while distance >0:  #first cycle finche è 2>0
-        for i in range(distance, len(elements)):  #2->5(dunque 2-3-4)
+        for i in range(distance, len(elements)):  #2->5(dunque 2-3-4) , quindi fc elements [6,1,3]
             temp = elements[i]  #firstcycle temp=6
             j=i  #fc  j=2
             while j >=distance and elements[j-distance] >temp:  #fc 2>=2 && elements[0]>temp
@@ -71,15 +85,20 @@ def shell_sort(elements):   #[5, 2, 6, 1, 3]
         #NEW CYCLE where distance will be =1,   inner FC  i=1 temp=elements[1] j=1
     return elements
 
-def selection_sort(elements):  #[5, 2, 6, 1, 3]
-    for fill_slot in range(len(elements)-1, 0, -1):  #fc 4->0 (quindi 4-3-2-1)
-        max_index =0  #fc fill_slot=4
-        for location in range(1, fill_slot+1):  #fc 1->5 (quindi 1-2-3-4) | sc(secondcycle) solo 1->4(quindi 1-2-3) dunque non controlla l'ultimo item(che è quello piu Big trovato ne Cycle precedente)
-            if elements[location] > elements[max_index]:
-                max_index = location
-        elements[fill_slot], elements[max_index] = elements[max_index], elements[fill_slot]
-           #scambia di posto, quindi in posizione [fill_slot] finirà l'item piu big selezionato da max_index. per il prossimo cycle fill_slot sarà uno in meno quindi questo item non verrà piu toccato
-    return elements
+
+def quick_sort(elements):  #🔥  [5, 2, 6, 1, 3]
+    if len(elements) <= 1:
+        return elements
+    pivot = elements[ len(elements) // 2 ]   # fc pivot = elements[1]
+    left = [x for x in elements if x < pivot]
+    middle = [x for x in elements if x == pivot]
+    right = [x for x in elements if x > pivot]
+    return quicksort(left) + middle + quicksort(right)
+
+
+#def tim_sort(elements, run=2):   #run piccolo per esempio, il tim_sort combina insertion_sort + merge_sort
+
+
 
 
 list1 = [5, 2, 6, 1, 3]
@@ -94,6 +113,7 @@ print(shell_sort(list1))
 print(selection_sort(list1))
 
 
+
 def linear_search(elements,item):
     index = 0
     isFound = False
@@ -104,7 +124,7 @@ def linear_search(elements,item):
             index = index +1
     return isFound
 
-def binary_search(elements,item):  #[2,3,4,5,6]  [3]  per funzionare gli elements devono già essere ordinati
+def binary_search(elements,item):  #🔥 #[2,3,4,5,6]  [3]  per funzionare gli elements devono già essere ordinati
     first = 0
     last = len(elements)-1  #fc  =4
     isFound = False
@@ -146,5 +166,5 @@ print(linear_search(list1,2))
 print(binary_search(list3,3))
 print(interpolation_search(list4,18))
 
-
+#in enterprise si utilizzno binarysearch su array normali ordinati, Hashing (dict/set in Python, HashMap in Java), data structures (like B-Tree o Hash Index) 
 

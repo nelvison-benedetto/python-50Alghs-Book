@@ -1,7 +1,7 @@
 
 '''
 
-#Strategy Divide Et Impera
+#####Strategy Divide Et Impera
 
 import findspark
 findspark.init()
@@ -21,7 +21,7 @@ print(wordCountsCollected.collect())
 '''
 
 '''
-#Strategy Brute Force x problema Commesso Viaggiatore
+#####Strategy Brute Force x problema Commesso Viaggiatore
 
 import random
 from itertools import permutations
@@ -89,7 +89,7 @@ tsp(brute_force, generate_cities(10))  #max x 10-11 citta, xk complessita O(n!) 
 
 
 
-#Strategy Algh Greedy x problema Commesso Viaggiatore
+#####Strategy Algh Greedy x problema Commesso Viaggiatore
 def greedy_algorithm(cities, start=None):
     city_ = start or first(cities)
     tour = [city_]
@@ -110,7 +110,7 @@ tsp(greedy_algorithm, generate_cities(200))  #O(n²) ma non garantisce il percor
 '''
 
 '''
-#Algoritmo Page Rank (by larry page and sergey brin from Google)
+#####Algoritmo Page Rank (by larry page and sergey brin from Google)
 
 import numpy as np
 import networkx as nx
@@ -146,7 +146,7 @@ print("Matrice di transizione G:\n", G)
 print("Vettore iniziale p:\n", p)
 '''
 
-#Strategy Programmazione Lineare
+#####Strategy Programmazione Lineare
 
 import pulp
 
