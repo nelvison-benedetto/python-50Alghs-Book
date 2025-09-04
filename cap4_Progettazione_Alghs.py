@@ -88,8 +88,8 @@ def name(algorithm):
 tsp(brute_force, generate_cities(10))  #max x 10-11 citta, xk complessita O(n!) (usa fattoriale)
 
 
-
 #####Strategy Algh Greedy x problema Commesso Viaggiatore
+
 def greedy_algorithm(cities, start=None):
     city_ = start or first(cities)
     tour = [city_]

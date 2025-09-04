@@ -13,6 +13,17 @@ def bubble_sort(elements):  #BUBBLE SORT
             break
     return elements
 
+# def bubble_sort(elements):  #solo un po piu leggibile 
+#   for i in range(len(elements)-1, 0, -1):
+# 	swapped = False
+# 	for j in range(i):
+# 	   if(elements[j]> elements[j+1]):
+# 		elements[j], elements[j+1] = elements[j+1], elements[j]
+# 		swapped = true;
+# 	if not swapped:
+# 	   break;
+#   return elements
+
 def selection_sort(elements):  #[5, 2, 6, 1, 3]
     for fill_slot in range(len(elements)-1, 0, -1):  #fc 4->0 (quindi 4-3-2-1)  cammini all'indietro
         max_index = 0   #fc fill_slot=4
@@ -24,6 +35,14 @@ def selection_sort(elements):  #[5, 2, 6, 1, 3]
            #scambia di posto, quindi in posizione [fill_slot] finirà l'item piu big selezionato da max_index. per il prossimo cycle fill_slot sarà uno in meno quindi questo item non verrà piu toccato
     return elements
 
+# def selection_sort(elements):  #solo un po più leggibile
+#   for i in range( len(elements)-1, 0, -1 ):
+#      max_idx = 0;
+#      for j in range(1, i+1):  #xk deve contare anche l'i stesso
+#          if( elements[j] > elements[max_idx]):
+#              max_idx = j
+#      elements[i], elements[max_idx] = elements[max_idx], elements[i]
+#   return elements
 
 def insertion_sort(elements):  #INSERTION SORT
     for i in range(1, len(elements)):  #se l'arr è 5 elementi, allora fa 1-2-3-4 non include il 5!
@@ -36,7 +55,8 @@ def insertion_sort(elements):  #INSERTION SORT
         #qua cmnq la lista elements viene continuamente modificata ad ogni ciclo, e viene riusata nel prossimo ciclo
     return elements   #classico return finale per dare la risposta ultimata
 
-def merge_sort(elements):  #MERGE SORT, divide et impera! 🔥
+
+def merge_sort(elements):  #MERGE SORT, divide et impera! 🔥 (anche nei casi peggiori è stabile, ideale x grandi datasets)
     if len(elements) <= 1:
         return elements
     mid = len(elements) // 2  #// is divisione intera e.g. 5//2 =2, quindi se ci sono 5 elems, 2 andranno in left e 3 in right
@@ -69,7 +89,7 @@ def merge_sort(elements):  #MERGE SORT, divide et impera! 🔥
     return elements  #fist cycle here elements=2items, ora questi 2items sono ordinati
     #ora si confronterà con i risultati dell'altro ramo (che anche lui aveva elements=2 oppure elements=1 )
 
-def shell_sort(elements):   #[5, 2, 6, 1, 3]
+def shell_sort(elements):   #[5, 2, 6, 1, 3] ,  anche se è migliore di Insertion, Bubble o Selection Sort, NON supera MergeSort, TimSort o QuickSort ed è anche non stabile(non garantisce di mantenere l'ordine tra elementi equivalenti)
     distance = len(elements) //2  #first cycle 5//2 =2
     while distance >0:  #first cycle finche è 2>0
         for i in range(distance, len(elements)):  #2->5(dunque 2-3-4) , quindi fc elements [6,1,3]
@@ -86,19 +106,81 @@ def shell_sort(elements):   #[5, 2, 6, 1, 3]
     return elements
 
 
-def quick_sort(elements):  #🔥  [5, 2, 6, 1, 3]
+def quick_sort(elements):  #🔥 O(n^2)(ma normalmente è O(n log n)), è stabile, è veloce(in media), su array enormi puo dare err RecursionError. [5, 2, 6, 1, 3] 
+      #here è non-inplace per didattica, ma la versione reale non crea nuove liste temps ma sposta gli elements.
     if len(elements) <= 1:
         return elements
-    pivot = elements[ len(elements) // 2 ]   # fc pivot = elements[1]
-    left = [x for x in elements if x < pivot]
-    middle = [x for x in elements if x == pivot]
-    right = [x for x in elements if x > pivot]
-    return quicksort(left) + middle + quicksort(right)
+    pivot = elements[ len(elements) // 2 ]   # fc pivot = elements[1] #qua in realta ci serve solo un valore random della lista, non necessariamente il medio. dunque si puo fare anche pivot=random.choice(elements)
+    left, middle, right = [], [], [] #arrays con rispettivamente solo i valori: minori del pivot, equali al pivot, maggiori del pivot.
+    for item in elements:
+        if item < pivot:
+            left.append(item)
+        elif item == pivot:
+            middle.append(item)
+        else:  #item > pivot
+            right.append(item)
+    # left = [x for x in elements if x < pivot]  #array con tutti gli elementi di valore minore del pivot
+    # middle = [x for x in elements if x == pivot]  #array con tutti gli elementi di valore uguale al pivot
+    # right = [x for x in elements if x > pivot]  #array con tutti gli elementi di valore maggiore del pivot
+    return quick_sort(left) + middle + quick_sort(right)  #concatena i pezzi ordinandoli, e passa il result all'annidamento superiore
 
 
-#def tim_sort(elements, run=2):   #run piccolo per esempio, il tim_sort combina insertion_sort + merge_sort
+#def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi, è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
+   #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort     #here run piccolo per esempio, 
+def insertion_sort_TIM(arr, left, right):
+    """Insertion sort limitato tra left e right inclusi"""
+    for i in range(left + 1, right + 1):
+        key = arr[i]
+        j = i - 1
+        while j >= left and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+def merge_TIM(arr, l, m, r):
+    """Merge tra due sottoliste ordinate: arr[l:m+1] e arr[m+1:r+1]"""
+    left = arr[l:m+1]
+    right = arr[m+1:r+1]
+    i = j = 0
+    k = l
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            arr[k] = left[i]
+            i += 1
+        else:
+            arr[k] = right[j]
+            j += 1
+        k += 1
+    while i < len(left):
+        arr[k] = left[i]
+        i += 1
+        k += 1
+    while j < len(right):
+        arr[k] = right[j]
+        j += 1
+        k += 1
+def tim_sort(arr):
+    n = len(arr)
+    RUN = 32
+    # 1️⃣ Ordina ogni blocco piccolo con insertion sort
+    for start in range(0, n, RUN):
+        end = min(start + RUN - 1, n - 1)
+        insertion_sort_TIM(arr, start, end)
+    # 2️⃣ Fai il merge dei blocchi in modo progressivo
+    size = RUN
+    while size < n:
+        for left in range(0, n, 2*size):
+            mid = min(n - 1, left + size - 1)
+            right = min((left + 2*size - 1), (n - 1))
+            if mid < right:
+                merge_TIM(arr, left, mid, right)
+        size *= 2
+    return arr
 
 
+
+# Heap Sort: complessità O(n log n) garantita, ma in pratica più lento di quick/merge → usato come fallback in introsort.
+# Radix Sort / Counting Sort: O(n) su casi specifici (chiavi numeriche limitate) → molto usato in sistemi embedded, grafica, compilatori.
+# IntroSort (Quick + Heap fallback): standard in C++ STL (std::sort) → molto comune in applicazioni enterprise.
 
 
 list1 = [5, 2, 6, 1, 3]
@@ -111,7 +193,7 @@ print(insertion_sort(list1))
 print(merge_sort(list2))
 print(shell_sort(list1))
 print(selection_sort(list1))
-
+print(quick_sort(list1))
 
 
 def linear_search(elements,item):
