@@ -195,6 +195,7 @@ print(shell_sort(list1))
 print(selection_sort(list1))
 print(quick_sort(list1))
 
+###########################Searching Alghs
 
 def linear_search(elements,item):
     index = 0
@@ -206,7 +207,7 @@ def linear_search(elements,item):
             index = index +1
     return isFound
 
-def binary_search(elements,item):  #🔥 #[2,3,4,5,6]  [3]  per funzionare gli elements devono già essere ordinati
+def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli elements devono già essere ordinati
     first = 0
     last = len(elements)-1  #fc  =4
     isFound = False
@@ -248,5 +249,8 @@ print(linear_search(list1,2))
 print(binary_search(list3,3))
 print(interpolation_search(list4,18))
 
-#in enterprise si utilizzno binarysearch su array normali ordinati, Hashing (dict/set in Python, HashMap in Java), data structures (like B-Tree o Hash Index) 
+#in reality in enterprise su big datasets si utilizzno:
+#binarysearch su array ordinati poco dinamici,
+#Hashing (python->dict/set,java->HashMap,HashSet,C#->Dictionary,HashSet),  //ricerca superveloce
+#alberi bilanciati (python->blist,bintrees java->TreeMap,TreeSet C#->SortedDictionary,SortedSet)  //se ti serve completo CRUD oltre che alla ricerca
 
