@@ -60,6 +60,7 @@ def merge_sort(elements):  #MERGE SORT, divide et impera! 🔥 (anche nei casi p
     if len(elements) <= 1:
         return elements
     mid = len(elements) // 2  #// is divisione intera e.g. 5//2 =2, quindi se ci sono 5 elems, 2 andranno in left e 3 in right
+      #NON USARE (0+(len(elems)-1))//2 !!quello va bene solo x binary_search , altrimenti qua elems=2 sarebbe mid=0 quindi con left e right fanno ricorsione infinita error StackOverflow!
     left = elements[:mid]   #create new list
     right = elements[mid:]  #create new list
 
@@ -107,16 +108,17 @@ def shell_sort(elements):   #[5, 2, 6, 1, 3] ,  anche se è migliore di Insertio
 
 
 def quick_sort(elements):  #🔥 O(n^2)(ma normalmente è O(n log n)), è stabile, è veloce(in media), su array enormi puo dare err RecursionError. [5, 2, 6, 1, 3] 
-      #here è non-inplace per didattica, ma la versione reale non crea nuove liste temps ma sposta gli elements.
+      #here è non-inplace per didattica, ma la versione reale non crea nuove liste temps ma sposta gli elements
     if len(elements) <= 1:
         return elements
     pivot = elements[ len(elements) // 2 ]   # fc pivot = elements[1] #qua in realta ci serve solo un valore random della lista, non necessariamente il medio. dunque si puo fare anche pivot=random.choice(elements)
+       #NON USARE (0+(len(elems)-1))//2 !!quello va bene solo x binary_search
     left, middle, right = [], [], [] #arrays con rispettivamente solo i valori: minori del pivot, equali al pivot, maggiori del pivot.
     for item in elements:
-        if item < pivot:
-            left.append(item)
-        elif item == pivot:
+        if item == pivot:
             middle.append(item)
+        elif item < pivot:
+            left.append(item)
         else:  #item > pivot
             right.append(item)
     # left = [x for x in elements if x < pivot]  #array con tutti gli elementi di valore minore del pivot
@@ -212,7 +214,8 @@ def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli ele
     last = len(elements)-1  #fc  =4
     isFound = False
     while first <=last and not isFound:
-        midpoint = (first+last) //2
+        midpoint = (first+last) //2  #divisione intera
+          #mid=first+(last-first)/2;  in c++/java questo è pro per evitare stackoverflow se first e last sono davvero bigs
         if elements[midpoint] == item:
             return True
         else:  #consideri o la parte sx o la parte dx di Midpoint, l'altra parte la  butti e non verrà mai piu utilizzata
@@ -222,7 +225,7 @@ def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli ele
                 first = midpoint +1
     return False
 
-def interpolation_search(elements,item):  #[2, 4, 6, 9, 12, 18, 24]  [18]  per funzionare gli elements devono già essere ordinati
+def interpolation_search(elements,item):  #[2, 4, 6, 9, 12, 18, 24][18]  per funzionare gli elements devono già essere ordinati
     idx0 = 0
     idxn = (len(elements)-1)  #fc  =6
     isFound = False

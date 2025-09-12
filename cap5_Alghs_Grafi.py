@@ -1,6 +1,4 @@
 
-#BFS (Breadth-First Search) ricerca per ampiezza
-
 graph = {
     'Amin' : {'Wasim','Nick','Mike'},
     'Wasim' : {'Imran','Amin'},
@@ -36,3 +34,4 @@ def DFS(graph, start, visited=None): #DFS(Depth-First Search) ricerca in profond
 start_node = 'Amin'
 print( BFS(graph,start_node) )
 print( DFS(graph,start_node) )
+
