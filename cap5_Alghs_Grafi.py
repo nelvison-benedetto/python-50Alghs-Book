@@ -22,6 +22,7 @@ def BFS(graph,start):  ##BFS (Breadth-First Search) ricerca per ampiezza, parte 
     return visited
 
 def DFS(graph, start, visited=None): #DFS(Depth-First Search) ricerca in profondita, raggiunge il nodo foglia piu lontano, poi si sposta su ramo successivo
+    #INFO about pre-order, in-order,post-order,level-traversal
     if visited is None:
         visited = set()
     visited.add(start)
