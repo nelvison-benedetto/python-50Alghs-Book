@@ -127,6 +127,93 @@ def quick_sort(elements):  #🔥 O(n^2)(ma normalmente è O(n log n)), è stabil
     return quick_sort(left) + middle + quick_sort(right)  #concatena i pezzi ordinandoli, e passa il result all'annidamento superiore
 
 
+def partition3_Xquicksortrandom(A, l, r):
+    """
+    3-way partitioning
+    - A[l..r] is partitioned into:
+        A[l..m1-1] < pivot
+        A[m1..m2] == pivot
+        A[m2+1..r] > pivot
+    Returns (m1, m2)
+    """
+    pivot = A[l]
+    m1 = l       #first index of pivot
+    m2 = l       #last index of pivot
+    for i in range(l + 1, r + 1):
+        if A[i] < pivot:
+            m1 += 1
+            A[i], A[m1] = A[m1], A[i]  # swap element < pivot to left
+            if m1 != m2:
+                m2 += 1
+                A[i], A[m2] = A[m2], A[i]  # shift equal pivot to middle
+        elif A[i] == pivot:
+            m2 += 1
+            A[i], A[m2] = A[m2], A[i]      # swap element == pivot to middle
+    A[l], A[m1] = A[m1], A[l]  # move pivot to its final place
+    return m1, m2
+def quick_sort_randomized(A, l=0, r=None):   #🔥🔥🔥 non è stabile(non garantisce di mantenere l'ordine tra elementi equivalenti)
+    """
+    QuickSort ottimizzato con:
+    -pivot random: riduce enormemente per prob di avere caso peggiore O(n**2)
+    -3-way partitioning: ricude enormemente squilibli con molti cloni ed eviti ricursioni inutili. scegli pivot x,metti a sx gli elems <x,  dx gli elems >x, al centro quelli ==x, 
+        #ottieni indexes m_1 and m_2 che delimitano il segmento ==x. 
+    -tail recursion sulla metà più grande convertita in loop: riduci profondita massima delle ricursione O(logn) (in media) 
+       #facendo ricorsione sul segmento piu small, e per il segmento big usi while().
+    #w pivot riandom+3-way partition ottieni i segmenti bilanciati(cioe che sono +- della stessa length), dunque la profondita ricorsiva è log_n
+       #(se fosse sbilanciato cioe pivot sempre min/max profondita ricorsiva +- n. quindi il caso peggiore sarebbe O(n**2))
+    """
+    if r is None:
+        r = len(A) - 1
+    while l < r:  # loop per sostituire la ricorsione sulla metà più grande
+        # scegliere un pivot casuale e metterlo all'inizio
+        k = random.randint(l, r)
+        A[l], A[k] = A[k], A[l]
+        # partizionamento in 3 parti
+        m1, m2 = partition3_Xquicksortrandom(A, l, r)
+        # ricorsione solo sulla metà più piccola
+        if (m1 - l) < (r - m2):
+            quick_sort_randomized(A, l, m1 - 1)
+            l = m2 + 1  # tail recursion sulla metà più grande
+        else:
+            quick_sort_randomized(A, m2 + 1, r)
+            r = m1 - 1  # tail recursion sulla metà più grande
+    return A
+
+
+def heap_sort(elements):   #O(n log n), non è stabile, è in-place, va bene anche per array molto grandi
+    n = len(elements)
+    def heapify(arr, n, i):  # serve per mantenere la proprietà dell'heap (padre >= figli)
+        largest = i           # supponiamo che la radice sia il più grande
+        left = 2 * i + 1      # figlio sinistro
+        right = 2 * i + 2     # figlio destro
+        # se il figlio sinistro esiste ed è maggiore della radice
+        if left < n and arr[left] > arr[largest]:
+            largest = left
+        # se il figlio destro esiste ed è maggiore del massimo trovato finora
+        if right < n and arr[right] > arr[largest]:
+            largest = right
+        # se il massimo non è la radice, scambia e continua a sistemare ricorsivamente
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]  # swap
+            heapify(arr, n, largest)
+    # 1. Costruzione dell'heap massimo (max-heap)
+    # Partiamo dal primo nodo non-foglia e risaliamo fino alla radice
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(elements, n, i)
+    # 2. Estrazione degli elementi uno per uno
+    # spostiamo la radice (massimo) in fondo, riduciamo la dimensione dell'heap, e sistemiamo con heapify
+    for i in range(n - 1, 0, -1):
+        elements[0], elements[i] = elements[i], elements[0]  # sposta il massimo in fondo
+        heapify(elements, i, 0)  # sistema l'heap con la radice ridotta
+    return elements
+
+
+#def intro_sort()  #🔥(quick_sort + se sta andando male passa a heap_sort), non è stabile, è in-place, è robusto
+  #un problema del quick_sort è che se array è gia ordinato ed pivot scelto male, algh degrada a O(n**2)
+  #intro_sort invece parte come quick_sort, ma se la profondità della ricorsione supera c log n (dunque il partizionamento sta andando male),
+    #passa a heap_sort (che è un O(nlogn))(e rimane anche in-place!)
+
+
 #def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi, è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
    #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort     #here run piccolo per esempio, 
 def insertion_sort_TIM(arr, left, right):
@@ -179,11 +266,9 @@ def tim_sort(arr):
     return arr
 
 
-
+# IntroSort (Quick + Heap fallback): standard in C++ STL (std::sort) → molto comune in applicazioni enterprise.
 # Heap Sort: complessità O(n log n) garantita, ma in pratica più lento di quick/merge → usato come fallback in introsort.
 # Radix Sort / Counting Sort: O(n) su casi specifici (chiavi numeriche limitate) → molto usato in sistemi embedded, grafica, compilatori.
-# IntroSort (Quick + Heap fallback): standard in C++ STL (std::sort) → molto comune in applicazioni enterprise.
-
 
 list1 = [5, 2, 6, 1, 3]
 list2 = [9, 2,  6, 1, 5,  4,3,8]
