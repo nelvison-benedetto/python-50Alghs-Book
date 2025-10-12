@@ -110,6 +110,8 @@ tsp(greedy_algorithm, generate_cities(200))  #O(n²) ma non garantisce il percor
 '''
 
 '''
+
+
 #####Algoritmo Page Rank (by larry page and sergey brin from Google)
 
 import numpy as np

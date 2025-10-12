@@ -214,7 +214,7 @@ def heap_sort(elements):   #O(n log n), non è stabile, è in-place, va bene anc
     #passa a heap_sort (che è un O(nlogn))(e rimane anche in-place!)
 
 
-#def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi, è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
+#def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi (e.g.JAVA), è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
    #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort     #here run piccolo per esempio, 
 def insertion_sort_TIM(arr, left, right):
     """Insertion sort limitato tra left e right inclusi"""
@@ -296,9 +296,9 @@ def linear_search(elements,item):
 
 def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli elements devono già essere ordinati
     first = 0
-    last = len(elements)-1  #fc  =4
+    last = len(elements)-1  #fc  =4     #importante -1 !!
     isFound = False
-    while first <=last and not isFound:
+    while first <=last and not isFound:  #!importante <= !!
         midpoint = (first+last) //2  #divisione intera
           #mid=first+(last-first)/2;  in c++/java questo è pro per evitare stackoverflow se first e last sono davvero bigs
         if elements[midpoint] == item:
