@@ -215,7 +215,7 @@ def heap_sort(elements):   #O(n log n), non è stabile, è in-place, va bene anc
 
 
 #def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi (e.g.JAVA), è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
-   #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort     #here run piccolo per esempio, 
+   #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort   #here run piccolo per esempio, 
 def insertion_sort_TIM(arr, left, right):
     """Insertion sort limitato tra left e right inclusi"""
     for i in range(left + 1, right + 1):
@@ -247,7 +247,7 @@ def merge_TIM(arr, l, m, r):
         arr[k] = right[j]
         j += 1
         k += 1
-def tim_sort(arr):
+def tim_sort(arr):  #O(n log n)
     n = len(arr)
     RUN = 32
     # 1️⃣ Ordina ogni blocco piccolo con insertion sort
@@ -294,6 +294,7 @@ def linear_search(elements,item):
             index = index +1
     return isFound
 
+  #è un divideetconquer(anche se gli manca lo step 'combine')
 def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli elements devono già essere ordinati
     first = 0
     last = len(elements)-1  #fc  =4     #importante -1 !!
