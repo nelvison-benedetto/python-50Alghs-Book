@@ -310,6 +310,23 @@ def binary_search(elements,item):  #🔥 #[2,3,4,5,6][3]  per funzionare gli ele
                 first = midpoint +1
     return False
 
+def binary_search_returnIdxFirstClone(elements,item):
+    left=0;
+    right=len(elements)-1
+    isFound = False
+    res = -1  #se not found target return -1
+    while left<=right and not isFound:  #anche qui in questa funct isFound potrebbe anche non esistere, cmnq sul Book50Alghs lo usava meglio saperlo 
+        mid = (left+right)//2
+        if elements[mid]==item:  #continua ad usare divideetimpera
+            res=mid;
+            right=mid-1
+        else:
+            if item <elements[mid]:
+                right = mid-1
+            else:
+                left = mid+1
+    return res;
+
 def interpolation_search(elements,item):  #[2, 4, 6, 9, 12, 18, 24][18]  per funzionare gli elements devono già essere ordinati
     idx0 = 0
     idxn = (len(elements)-1)  #fc  =6
