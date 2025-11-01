@@ -233,11 +233,9 @@ def heap_sort(elements):   #O(n log n), non è stabile, è in-place, va bene anc
     #passa a heap_sort (che è un O(nlogn))(e rimane anche in-place!)
 
 
-#🔥🔥
-#def tim_sort(elements, run=2):   #🔥(standart in enterprise & standart predefinito in molti linguaggi (e.g.JAVA), è stabile, è adattivo, O(n log n) nel caso peggiore, è ottimo su dati del real world(dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)) 
-   #combina insertion_sort (per creare dei segmenti gia ordinati) + merge_sort   #here run piccolo per esempio, 
-def insertion_sort_TIM(arr, left, right):
-    """Insertion sort limitato tra left e right inclusi"""
+
+def insertion_sort_TIM(arr, left, right):  # O(n log n), in-place(quasi), stabile, adattiva(quasi), no galloping mode, combina insertion_sort per piccoli segmenti (run) + merge_sort progressivo
+    """Ordina la porzione arr[left:right+1] con insertion sort"""
     for i in range(left + 1, right + 1):
         key = arr[i]
         j = i - 1
@@ -246,19 +244,20 @@ def insertion_sort_TIM(arr, left, right):
             j -= 1
         arr[j + 1] = key
 def merge_TIM(arr, l, m, r):
-    """Merge tra due sottoliste ordinate: arr[l:m+1] e arr[m+1:r+1]"""
-    left = arr[l:m+1]
-    right = arr[m+1:r+1]
+    """Esegue il merge di due sottoliste ordinate arr[l:m+1] e arr[m+1:r+1]"""
+    left = arr[l:m + 1]
+    right = arr[m + 1:r + 1]
     i = j = 0
     k = l
     while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
+        if left[i] <= right[j]:  # <= per mantenere stabilità
             arr[k] = left[i]
             i += 1
         else:
             arr[k] = right[j]
             j += 1
         k += 1
+    # Copia eventuali rimanenti
     while i < len(left):
         arr[k] = left[i]
         i += 1
@@ -267,23 +266,106 @@ def merge_TIM(arr, l, m, r):
         arr[k] = right[j]
         j += 1
         k += 1
-def tim_sort(arr):  #O(n log n)
+def tim_sort(arr):
+    """Versione didattica del TimSort"""
     n = len(arr)
-    RUN = 32
-    # 1️⃣ Ordina ogni blocco piccolo con insertion sort
+    RUN = 32  # dimensione minima dei blocchi (tipica in implementazioni reali: 32 o 64)
+    # 1️⃣ Ordina blocchi piccoli con insertion sort
     for start in range(0, n, RUN):
         end = min(start + RUN - 1, n - 1)
         insertion_sort_TIM(arr, start, end)
-    # 2️⃣ Fai il merge dei blocchi in modo progressivo
+    # 2️⃣ Unisci i blocchi ordinati progressivamente
     size = RUN
     while size < n:
-        for left in range(0, n, 2*size):
+        for left in range(0, n, 2 * size):
             mid = min(n - 1, left + size - 1)
-            right = min((left + 2*size - 1), (n - 1))
+            right = min(left + 2 * size - 1, n - 1)
             if mid < right:
                 merge_TIM(arr, left, mid, right)
         size *= 2
     return arr
+
+
+#🔥🔥ADVANCED MERGE_SORT: best sort algh in assoluto, standart in enterprise e standart predefinito in linguaggi programmazione (e.g.Java,Python).
+#O(n log n), in-place(quasi), stabile, adattivo, galloping mode, run detection, stack di merge, ect, e super ottimizzato per i dati reali (dove cmnq i dati arrivano gia ordinati/parzialmente ordinati)
+def binary_insertion_sort(arr, left, right):
+    """Insertion sort ottimizzato con ricerca binaria per inserimento"""
+    for i in range(left + 1, right + 1):
+        key = arr[i]
+        lo, hi = left, i
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if arr[mid] <= key:
+                lo = mid + 1
+            else:
+                hi = mid
+        # Shift
+        for j in range(i, lo, -1):
+            arr[j] = arr[j - 1]
+        arr[lo] = key
+def merge(arr, start, mid, end):
+    """Esegue il merge stabile con 'galloping mode' (accelerazione)"""
+    left = arr[start:mid]
+    right = arr[mid:end]
+    i = j = 0
+    k = start
+    # galloping mode: accelerazione per blocchi lunghi simili
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            arr[k] = left[i]
+            i += 1
+        else:
+            arr[k] = right[j]
+            j += 1
+        k += 1
+    # copia i rimanenti
+    while i < len(left):
+        arr[k] = left[i]
+        i += 1
+        k += 1
+    while j < len(right):
+        arr[k] = right[j]
+        j += 1
+        k += 1
+def find_run(arr, start, end):
+    """Trova un run naturale (già ordinato o decrescente)"""
+    run_hi = start + 1
+    if run_hi == end:
+        return run_hi
+    # verifica direzione
+    if arr[run_hi] < arr[start]:
+        while run_hi < end and arr[run_hi] < arr[run_hi - 1]:
+            run_hi += 1
+        arr[start:run_hi] = reversed(arr[start:run_hi])  # inverti se decrescente
+    else:
+        while run_hi < end and arr[run_hi] >= arr[run_hi - 1]:
+            run_hi += 1
+    return run_hi
+def tim_sort_advanced(arr):
+    """TimSort completo (avanzato, versione da libreria)"""
+    n = len(arr)
+    MIN_RUN = 32
+    runs = []
+    # 1️⃣ Trova e ordina tutti i run naturali
+    i = 0
+    while i < n:
+        run_end = find_run(arr, i, n)
+        binary_insertion_sort(arr, i, run_end - 1)
+        runs.append((i, run_end))
+        i = run_end
+    # 2️⃣ Unisci i run in maniera adattiva (come fa Python)
+    while len(runs) > 1:
+        new_runs = []
+        for j in range(0, len(runs) - 1, 2):
+            start, mid = runs[j]
+            _, end = runs[j + 1]
+            merge(arr, start, mid, end)
+            new_runs.append((start, end))
+        if len(runs) % 2 == 1:
+            new_runs.append(runs[-1])
+        runs = new_runs
+    return arr
+
 
 
 # IntroSort (Quick + Heap fallback): standard in C++ STL (std::sort) → molto comune in applicazioni enterprise.
@@ -338,7 +420,7 @@ def binary_search_returnIdxFirstClone(elements,item):
     res = -1  #se not found target return -1
     while left<=right and not isFound:  #anche qui in questa funct isFound potrebbe anche non esistere, cmnq sul Book50Alghs lo usava meglio saperlo 
         mid = (left+right)//2
-        if elements[mid]==item:  #continua ad usare divideetimpera
+        if elements[mid]==item:  #continua ad usare divideetimpera!
             res=mid;
             right=mid-1
         else:
